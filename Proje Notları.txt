@@ -1,0 +1,5 @@
+Entities katmanýnda Sýnýfýmýzý oluþturuyoruz.
+Dataaccess içerisinde Abstract dosyasýna ilgili sýnýfýmýzýn interface olarak ekliyoruz.
+EntitiyFramework e Map iþlemi eklendi.
+NorthwindContext e Dbset eklendi. migration false durumda zaten
+DataAccess Concrete EntitiyFramework içerisine EfCategoryDal sýnýfý eklendi . gerekli temel implemantasyon yapýlýp iþlemi yapýldý.
