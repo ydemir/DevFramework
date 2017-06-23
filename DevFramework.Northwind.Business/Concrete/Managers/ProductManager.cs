@@ -4,11 +4,13 @@ using DevFramework.Northwind.Entities.Concrete;
 using DevFramework.Northwind.DataAccess.Abstract;
 using DevFramework.Northwind.Business.ValidationRules.FluentValidation;
 using DevFramework.Core.Aspects.Postsharp.ValidationAspects;
+using DevFramework.Core.Aspects.Postsharp.TransactionAspects;
 
 //DevFramework.Core referansı eklemem gerekiyor. aksi taktirde dal a ulaşamıyorum.
 
 namespace DevFramework.Northwind.Business.Concrete.Managers
 {
+    
     public class ProductManager : IProductService
     {
         private IProductDal _productDal;

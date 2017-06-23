@@ -8,7 +8,8 @@ using System.Transactions;
 
 namespace DevFramework.Core.Aspects.Postsharp.TransactionAspects
 {
-   public class TransactionScopeAspect:OnMethodBoundaryAspect
+    [Serializable]
+    public class TransactionScopeAspect:OnMethodBoundaryAspect
     {
         private TransactionScopeOption _option;
         public TransactionScopeAspect(TransactionScopeOption option)
