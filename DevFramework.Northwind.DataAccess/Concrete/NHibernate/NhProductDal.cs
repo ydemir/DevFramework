@@ -16,7 +16,7 @@ namespace DevFramework.Northwind.DataAccess.Concrete.NHibernate
        private NHibernateHelper _nHibernateHelper;
         public NhProductDal(NHibernateHelper nHibernateHelper) : base(nHibernateHelper)
         {
-
+            _nHibernateHelper = nHibernateHelper;
         }
 
         public List<ProductDetail> GetProductDetails()

@@ -5,12 +5,16 @@ using DevFramework.Northwind.DataAccess.Abstract;
 using DevFramework.Northwind.Business.ValidationRules.FluentValidation;
 using DevFramework.Core.Aspects.Postsharp.ValidationAspects;
 using DevFramework.Core.Aspects.Postsharp.TransactionAspects;
+using DevFramework.Core.CrossCuttingConcerns.Caching.Microsoft;
+using DevFramework.Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
+using DevFramework.Core.Aspects.Postsharp.CacheAspects;
+using DevFramework.Core.Aspects.Postsharp.LogAspects;
 
 //DevFramework.Core referansı eklemem gerekiyor. aksi taktirde dal a ulaşamıyorum.
 
 namespace DevFramework.Northwind.Business.Concrete.Managers
 {
-    
+
     public class ProductManager : IProductService
     {
         private IProductDal _productDal;
@@ -19,11 +23,15 @@ namespace DevFramework.Northwind.Business.Concrete.Managers
             _productDal = productDal;
         }
         [FluentValidationAspect(typeof(ProductValidatior))]
+        [CacheRemoveAspect(typeof(MemoryCacheManager))]
         public Product Add(Product product)
         {
             return _productDal.Add(product);
         }
 
+        [CacheAspects(typeof(MemoryCacheManager))]
+        [LogAspect(typeof(DatabaseLogger))]
+        [LogAspect(typeof(FileLogger))]
         public List<Product> GetAll()
         {
             return _productDal.GetList();
