@@ -10,36 +10,37 @@ using System.Reflection;
 namespace DevFramework.Core.Aspects.Postsharp.CacheAspects
 {
     [Serializable]
-   public class CacheAspects:MethodInterceptionAspect
+    public class CacheAspect:MethodInterceptionAspect
     {
-        Type _cacheType;
-        private int _cacheByMunite;
+        private Type _cacheType;
+        private int _cacheByMinute;
         private ICacheManager _cacheManager;
 
-        public CacheAspects(Type cacheType, int cacheByMunite=60)
+        public CacheAspect(Type cacheType, int cacheByMinute=60)
         {
             _cacheType = cacheType;
-            _cacheByMunite = cacheByMunite;
+            _cacheByMinute = cacheByMinute;
         }
 
-        //hangi cachemanager methodu gelirse onu çağırmak için bu methodu override ediyoruz.
         public override void RuntimeInitialize(MethodBase method)
         {
-            //gönderilen type bir cache manager türünde değilse
             if (typeof(ICacheManager).IsAssignableFrom(_cacheType)==false)
             {
-                throw new Exception("Wrong cache manager");
+                throw new Exception("Wrong Cache Manager");
             }
-            _cacheManager = (ICacheManager)Activator.CreateInstance(_cacheType);
+            _cacheManager = (ICacheManager) Activator.CreateInstance(_cacheType);
+
             base.RuntimeInitialize(method);
         }
-        //Methoda girmeden çalıştırılacak 
+
         public override void OnInvoke(MethodInterceptionArgs args)
         {
             var methodName = string.Format("{0}.{1}.{2}",
                 args.Method.ReflectedType.Namespace,
+                args.Method.ReflectedType.Name,
                 args.Method.Name);
             var arguments = args.Arguments.ToList();
+
             var key = string.Format("{0}({1})", methodName,
                 string.Join(",", arguments.Select(x => x != null ? x.ToString() : "<Null>")));
 
@@ -48,7 +49,8 @@ namespace DevFramework.Core.Aspects.Postsharp.CacheAspects
                 args.ReturnValue = _cacheManager.Get<object>(key);
             }
             base.OnInvoke(args);
-            _cacheManager.Add(key, args.ReturnValue, _cacheByMunite);
+            _cacheManager.Add(key,args.ReturnValue,_cacheByMinute);
+
         }
     }
 }

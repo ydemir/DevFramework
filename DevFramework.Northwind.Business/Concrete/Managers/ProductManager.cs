@@ -9,6 +9,8 @@ using DevFramework.Core.CrossCuttingConcerns.Caching.Microsoft;
 using DevFramework.Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using DevFramework.Core.Aspects.Postsharp.CacheAspects;
 using DevFramework.Core.Aspects.Postsharp.LogAspects;
+using DevFramework.Core.Aspects.Postsharp.PerformanceAspects;
+using System.Threading;
 
 //DevFramework.Core referansı eklemem gerekiyor. aksi taktirde dal a ulaşamıyorum.
 
@@ -22,6 +24,8 @@ namespace DevFramework.Northwind.Business.Concrete.Managers
         {
             _productDal = productDal;
         }
+       // [LogAspect(typeof(DatabaseLogger))]
+      //  [LogAspect(typeof(FileLogger))]
         [FluentValidationAspect(typeof(ProductValidatior))]
         [CacheRemoveAspect(typeof(MemoryCacheManager))]
         public Product Add(Product product)
@@ -29,11 +33,13 @@ namespace DevFramework.Northwind.Business.Concrete.Managers
             return _productDal.Add(product);
         }
 
-        [CacheAspects(typeof(MemoryCacheManager))]
-        [LogAspect(typeof(DatabaseLogger))]
-        [LogAspect(typeof(FileLogger))]
+        [CacheAspect(typeof(MemoryCacheManager))]
+        //[LogAspect(typeof(DatabaseLogger))]
+        //[LogAspect(typeof(FileLogger))]
+        [PerformanceCounterAspect(2)]
         public List<Product> GetAll()
         {
+            Thread.Sleep(3000);
             return _productDal.GetList();
         }
 
@@ -62,10 +68,11 @@ namespace DevFramework.Northwind.Business.Concrete.Managers
         //}
 
         [TransactionScopeAspect]
+        [FluentValidationAspect(typeof(ProductValidatior))]
         public void TransactionOperation(Product product1, Product product2)
         {
             _productDal.Add(product1);
-
+            //Business code
             _productDal.Update(product2);
         }
 
