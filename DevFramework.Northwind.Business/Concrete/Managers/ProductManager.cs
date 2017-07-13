@@ -11,6 +11,7 @@ using DevFramework.Core.Aspects.Postsharp.CacheAspects;
 using DevFramework.Core.Aspects.Postsharp.LogAspects;
 using DevFramework.Core.Aspects.Postsharp.PerformanceAspects;
 using System.Threading;
+using DevFramework.Core.Aspects.Postsharp.AuthorizationAspects;
 
 //DevFramework.Core referansı eklemem gerekiyor. aksi taktirde dal a ulaşamıyorum.
 
@@ -37,6 +38,7 @@ namespace DevFramework.Northwind.Business.Concrete.Managers
         //[LogAspect(typeof(DatabaseLogger))]
         //[LogAspect(typeof(FileLogger))]
         [PerformanceCounterAspect(2)]
+        [SecuredOperation(Roles="Admin,Editor")]
         public List<Product> GetAll()
         {
             Thread.Sleep(3000);
